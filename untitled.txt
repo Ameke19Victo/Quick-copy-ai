@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickCopy AI</title>
+  <style>
+    body { font-family: Arial; margin: 0; background: #007BFF; color: white; }
+    .container { padding: 20px; max-width: 400px; margin: auto; }
+    input, select, button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    input, select { background: white; color: black; }
+    button { background: #0056b3; color: white; cursor: pointer; }
+    #result {
+      background: white;
+      color: black;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    #signup, #login, #app { display: none; }
+    .switch-link {
+      text-align: center;
+      margin-top: 10px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Sign Up -->
+  <div id="signup">
+    <h1>Create Account</h1>
+    <input type="text" id="new-username" placeholder="Create a username">
+    <input type="password" id="new-password" placeholder="Create a password">
+    <button onclick="createAccount()">Sign Up</button>
+    <div class="switch-link" onclick="showLogin()">Already have an account? Sign In</div>
+  </div>
+
+  <!-- Login -->
+  <div id="login">
+    <h1>Sign In</h1>
+    <input type="text" id="login-username" placeholder="Username">
+    <input type="password" id="login-password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="switch-link" onclick="showSignup()">New here? Create an account</div>
+  </div>
+
+  <!-- AI App -->
+  <div id="app">
+    <h2>QuickCopy AI Tool</h2>
+    <button onclick="logout()" style="background:red">Logout</button>
+    <input type="text" id="business" placeholder="Business type (e.g. bakery)">
+    <input type="text" id="location" placeholder="Location (e.g. Lagos)">
+    <input type="text" id="offer" placeholder="Offer or product (e.g. 20% off cakes)">
+    <select id="type">
+      <option value="Ad">Ad</option>
+      <option value="Email">Email</option>
+      <option value="Social Post">Social Post</option>
+    </select>
+    <button onclick="generate()">Generate Copy</button>
+    <div id="result"></div>
+  </div>
+
+</div>
+
+<script>
+  function showSignup() {
+    document.getElementById('signup').style.display = 'block';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+  }
+
+  function showLogin() {
+    document.getElementById('signup').style.display = 'none';
+    document.getElementById('login').style.display = 'block';
+    document.getElementById('app').style.display = 'none';
+  }
+
+  function createAccount() {
+    const user = document.getElementById('new-username').value.trim();
+    const pass = document.getElementById('new-password').value.trim();
+
+    if (user && pass) {
+      localStorage.setItem('username', user);
+      localStorage.setItem('password', pass);
+      alert("Account created successfully. You can now log in.");
+      showLogin();
+    } else {
+      alert("Please enter both username and password.");
+    }
+  }
+
+  function login() {
+    const user = document.getElementById('login-username').value.trim();
+    const pass = document.getElementById('login-password').value.trim();
+
+    const savedUser = localStorage.getItem('username');
+    const savedPass = localStorage.getItem('password');
+
+    if (user === savedUser && pass === savedPass) {
+      localStorage.setItem('loggedIn', 'true');
+      showApp();
+    } else {
+      alert("Incorrect username or password.");
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('loggedIn');
+    showLogin();
+  }
+
+  function showApp() {
+    document.getElementById('signup').style.display = 'none';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  function generate() {
+    const business = document.getElementById('business').value;
+    const location = document.getElementById('location').value;
+    const offer = document.getElementById('offer').value;
+    const type = document.getElementById('type').value;
+
+    const fakeAIResponse = `Here's your ${type.toLowerCase()} copy:\n\n` +
+      `Are you in ${location}? Our amazing ${business} is now offering ${offer}. Don't miss it!`;
+
+    document.getElementById('result').innerText = fakeAIResponse;
+  }
+
+  // On page load
+  window.onload = () => {
+    if (localStorage.getItem('loggedIn') === 'true') {
+      showApp();
+    } else {
+      showLogin();
+    }
+  };
+</script>
+
+</body>
+</html>
